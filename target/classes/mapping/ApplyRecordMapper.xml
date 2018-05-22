@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.bj.mapper.IApplyRecordMapper">
+  <resultMap id="ApplyRecordResultMap" type="com.tuzhi.bj.domain.ApplyRecord">
+        <id column="id" property="id" />
+    <result column="apply_id" property="applyId" />
+    <result column="user_id" property="userId" />
+    <result column="meeting_id" property="meetingId" />
+    <result column="personnel_id" property="personnelId" />
+    <result column="planned_date" property="plannedDate" />
+    <result column="planned_time" property="plannedTime" />
+    <result column="actual_date" property="actualDate" />
+    <result column="actual_time" property="actualTime" />
+    <result column="status" property="status" />
+    <result column="result" property="result" />
+    <result column="created_time" property="createdTime" />
+
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	    	<if test="id != null">and id=#{id}</if>
+    	<if test="applyId != null">and apply_id=#{applyId}</if>
+    	<if test="userId != null">and user_id=#{userId}</if>
+    	<if test="meetingId != null">and meeting_id=#{meetingId}</if>
+    	<if test="personnelId != null">and personnel_id=#{personnelId}</if>
+    	<if test="plannedDate != null">and planned_date=#{plannedDate}</if>
+    	<if test="plannedTime != null and plannedTime != '' ">and planned_time=#{plannedTime}</if>
+    	<if test="actualDate != null">and actual_date=#{actualDate}</if>
+    	<if test="actualTime != null and actualTime != '' ">and actual_time=#{actualTime}</if>
+    	<if test="status != null">and status=#{status}</if>
+    	<if test="result != null and result != '' ">and result=#{result}</if>
+    	<if test="createdTime != null">and created_time=#{createdTime}</if>
+
+    </trim>
+  </sql>
+  <sql id="column_List">
+    id,apply_id,user_id,meeting_id,personnel_id,planned_date,planned_time,actual_date,actual_time,status,result,created_time
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findApplyRecordList" parameterType="com.tuzhi.bj.domain.ApplyRecord" resultMap="ApplyRecordResultMap">
+    select	<include refid="column_List" />
+    from t_apply_record
+    <include refid="column_Where" />
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  id ${sortOrder } </if>
+    	<if test="'applyId' == sortName">  apply_id ${sortOrder } </if>
+    	<if test="'userId' == sortName">  user_id ${sortOrder } </if>
+    	<if test="'meetingId' == sortName">  meeting_id ${sortOrder } </if>
+    	<if test="'personnelId' == sortName">  personnel_id ${sortOrder } </if>
+    	<if test="'plannedDate' == sortName">  planned_date ${sortOrder } </if>
+    	<if test="'plannedTime' == sortName">  planned_time ${sortOrder } </if>
+    	<if test="'actualDate' == sortName">  actual_date ${sortOrder } </if>
+    	<if test="'actualTime' == sortName">  actual_time ${sortOrder } </if>
+    	<if test="'status' == sortName">  status ${sortOrder } </if>
+    	<if test="'result' == sortName">  result ${sortOrder } </if>
+    	<if test="'createdTime' == sortName">  created_time ${sortOrder } </if>
+
+    </if>
+  </select>
+  
+  <!--只更新不为null的值-->
+  <update id="updateApplyRecordSelectiveById" parameterType="com.tuzhi.bj.domain.ApplyRecord">
+    update t_apply_record
+    <set>
+          	<if test="applyId != null">
+    		apply_id = #{applyId},
+    	</if>
+    	<if test="userId != null">
+    		user_id = #{userId},
+    	</if>
+    	<if test="meetingId != null">
+    		meeting_id = #{meetingId},
+    	</if>
+    	<if test="personnelId != null">
+    		personnel_id = #{personnelId},
+    	</if>
+    	<if test="plannedDate != null">
+    		planned_date = #{plannedDate},
+    	</if>
+    	<if test="plannedTime != null">
+    		planned_time = #{plannedTime},
+    	</if>
+    	<if test="actualDate != null">
+    		actual_date = #{actualDate},
+    	</if>
+    	<if test="actualTime != null">
+    		actual_time = #{actualTime},
+    	</if>
+    	<if test="status != null">
+    		status = #{status},
+    	</if>
+    	<if test="result != null">
+    		result = #{result},
+    	</if>
+    	<if test="createdTime != null">
+    		created_time = #{createdTime},
+    	</if>
+
+    </set>
+    where  id = #{id}
+  </update>
+  <update id="updateReadyMeetingByApplyId" parameterType="com.tuzhi.bj.domain.ApplyRecord">
+    update t_apply_record
+    <set>
+    	<if test="userId != null">
+    		user_id = #{userId},
+    	</if>
+    	<if test="meetingId != null">
+    		meeting_id = #{meetingId},
+    	</if>
+    	<if test="personnelId != null">
+    		personnel_id = #{personnelId},
+    	</if>
+    	<if test="plannedDate != null">
+    		planned_date = #{plannedDate},
+    	</if>
+    	<if test="plannedTime != null">
+    		planned_time = #{plannedTime},
+    	</if>
+    	<if test="actualDate != null">
+    		actual_date = #{actualDate},
+    	</if>
+    	<if test="actualTime != null">
+    		actual_time = #{actualTime},
+    	</if>
+    	<if test="status != null">
+    		status = #{status},
+    	</if>
+    	<if test="result != null">
+    		result = #{result},
+    	</if>
+    	<if test="createdTime != null">
+    		created_time = #{createdTime},
+    	</if>
+
+    </set>
+    where  apply_id = #{applyId}
+  </update>
+  
+  <select id="getReadyMeetings" resultType="map">
+  	SELECT a.`project_name` projectName, a.id applyId ,ar.planned_date plannedDate ,ar.`planned_time` plannedTime,
+		ar.`actual_date` actualDate , ar.`actual_time` actualTime ,ar.`personnel_id` personnelId,
+		m.`name` meetingType ,m.`id` meetingId,u.username personnel
+		FROM t_apply_record ar 
+		LEFT JOIN t_user u ON u.id = ar.`personnel_id`
+		LEFT JOIN t_meeting m ON m.`id` = ar.meeting_id
+		LEFT JOIN t_apply a ON a.id = ar.`apply_id`
+	WHERE ar.`status`= 0
+  </select>
+  <!-- 获取我要开的会议 -->
+  <select id="getMyMeetings" resultType="map">
+  	SELECT a.`project_name` projectName, a.id applyId ,ar.planned_date plannedDate ,ar.`planned_time` plannedTime,
+		ar.`actual_date` actualDate , ar.`actual_time` actualTime ,ar.`personnel_id` personnelId,
+		m.`name` meetingType ,m.`id` meetingId,u.username personnel
+		FROM t_apply_record ar 
+		LEFT JOIN t_user u ON u.id = ar.`personnel_id`
+		LEFT JOIN t_meeting m ON m.`id` = ar.meeting_id
+		LEFT JOIN t_apply a ON a.id = ar.`apply_id`
+	WHERE ar.`status`= 0 and ar.`personnel_id` = #{wangdali}
+  </select>
+</mapper>

@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.bj.mapper.IApplyMapper">
+  <resultMap id="ApplyResultMap" type="com.tuzhi.bj.domain.Apply">
+        <id column="id" property="id" />
+    <result column="project_name" property="projectName" />
+    <result column="apply_person" property="applyPerson" />
+    <result column="apply_department" property="applyDepartment" />
+    <result column="apply_time" property="applyTime" />
+    <result column="apply_msg" property="applyMsg" />
+    <result column="phone" property="phone" />
+    <result column="images" property="images" />
+    <result column="status" property="status" />
+    <result column="result" property="result" />
+    <result column="created_time" property="createdTime" />
+  </resultMap>
+  <resultMap id="appApplyMap" type="com.tuzhi.bj.api.domain.AppApply">
+    <id column="id" property="applyId" />
+    <result column="project_name" property="projectName" />
+    <result column="apply_person" property="contacts" />
+    <result column="apply_department" property="department" />
+    <result column="apply_time" property="applyTime" />
+    <result column="phone" property="contactNumber" />
+    <result column="images" property="images" />
+    <result column="apply_msg" property="images2" />
+    <result column="created_time" property="receptionTime"/>
+    <result column="result" property="transactState"/>
+  </resultMap>
+  <resultMap type="com.tuzhi.bj.domain.vo.ApplyExt" id="extMap" extends="ApplyResultMap">
+  	<result column="meetingUsername" property="meetingUsername"/>
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	    	<if test="id != null">and id=#{id}</if>
+    	<if test="projectName != null and projectName != '' ">and project_name=#{projectName}</if>
+    	<if test="applyPerson != null and applyPerson != '' ">and apply_person=#{applyPerson}</if>
+    	<if test="applyDepartment != null and applyDepartment != '' ">and apply_department=#{applyDepartment}</if>
+    	<if test="applyTime != null">and apply_time=#{applyTime}</if>
+    	<if test="applyMsg != null and applyMsg != '' ">and apply_msg=#{applyMsg}</if>
+    	<if test="phone != null and phone != '' ">and phone=#{phone}</if>
+    	<if test="images != null and images != '' ">and images=#{images}</if>
+    	<if test="status != null and status != 520 ">and status >= #{status}</if>
+    	<if test="status != null and status == 520 ">and status = 1</if>
+    	<if test="result != null and result != '' ">and result=#{result}</if>
+    	<if test="createdTime != null">and created_time=#{createdTime}</if>
+    </trim>
+  </sql>
+  <sql id="column_List">
+    id,project_name,apply_person,apply_department,apply_time,apply_msg,phone,images,status,result,created_time
+  </sql>
+  
+  <sql id="column_List_a">
+    a.id,a.project_name,a.apply_person,a.apply_department,a.apply_time
+    ,a.apply_msg,a.phone,a.images,a.status,a.result,a.created_time
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findApplyList" parameterType="com.tuzhi.bj.domain.Apply" resultMap="ApplyResultMap">
+    select	<include refid="column_List" />
+    from t_apply a
+    <include refid="column_Where" />
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  id ${sortOrder } </if>
+    	<if test="'projectName' == sortName">  project_name ${sortOrder } </if>
+    	<if test="'applyPerson' == sortName">  apply_person ${sortOrder } </if>
+    	<if test="'applyDepartment' == sortName">  apply_department ${sortOrder } </if>
+    	<if test="'applyTime' == sortName">  apply_time ${sortOrder } </if>
+    	<if test="'applyMsg' == sortName">  apply_msg ${sortOrder } </if>
+    	<if test="'phone' == sortName">  phone ${sortOrder } </if>
+    	<if test="'images' == sortName">  images ${sortOrder } </if>
+    	<if test="'status' == sortName">  status ${sortOrder } </if>
+    	<if test="'result' == sortName">  result ${sortOrder } </if>
+    	<if test="'createdTime' == sortName">  created_time ${sortOrder } </if>
+
+    </if>
+  </select>
+  
+  <!--只更新不为null的值-->
+  <update id="updateApplySelectiveById" parameterType="com.tuzhi.bj.domain.Apply">
+    update t_apply
+    <set>
+          	<if test="projectName != null">
+    		project_name = #{projectName},
+    	</if>
+    	<if test="applyPerson != null">
+    		apply_person = #{applyPerson},
+    	</if>
+    	<if test="applyDepartment != null">
+    		apply_department = #{applyDepartment},
+    	</if>
+    	<if test="applyTime != null">
+    		apply_time = #{applyTime},
+    	</if>
+    	<if test="applyMsg != null">
+    		apply_msg = #{applyMsg},
+    	</if>
+    	<if test="phone != null">
+    		phone = #{phone},
+    	</if>
+    	<if test="images != null">
+    		images = #{images},
+    	</if>
+    	<if test="status != null">
+    		status = #{status},
+    	</if>
+    	<if test="result != null">
+    		result = #{result},
+    	</if>
+    	<if test="createdTime != null">
+    		created_time = #{createdTime},
+    	</if>
+
+    </set>
+    where  id = #{id}
+  </update>
+  
+  <select id="alreadyAccept" resultMap="appApplyMap" parameterType="int">
+  	 select	<include refid="column_List" />
+    	from t_apply
+    	<where>
+    		<if test="status == null or status == 1 ">
+    			and status != 4
+    		</if>
+    		<if test="status != null and status != 1">
+    			and status = #{status}
+    		</if>
+    	</where>
+  </select>
+  
+  <!-- applyList 获取会议列表,,会议跟进人 -->
+  <select id="applyList" resultMap="extMap">
+  	select	<include refid="column_List_a" /> , u.username meetingUsername
+    	from t_apply a
+    	left join t_apply_record ar on ar.apply_id = a.id and ar.status=0
+    	left join t_user u on u.id = ar.personnel_id group by a.id			
+  </select>
+  <select id="getReadyApply" resultMap="appApplyMap">
+  	select id,project_name,apply_person,apply_department,
+  			apply_time,apply_msg,phone,images,status,result
+			,created_time from t_apply where status = #{status}
+  </select>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.bj.mapper.IRoleMapper">
+  <resultMap id="RoleResultMap" type="com.tuzhi.bj.domain.Role">
+        <id column="id" property="id" />
+    <result column="role_name" property="roleName" />
+    <result column="role_key" property="roleKey" />
+    <result column="level" property="level" />
+    <result column="remarks" property="remarks" />
+    <result column="order_by" property="orderBy" />
+    <result column="created_time" property="createdTime" />
+
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	    	<if test="id != null">and id=#{id}</if>
+    	<if test="roleName != null and roleName != '' ">and role_name like '%${roleName}%'</if>
+    	<if test="roleKey != null and roleKey != '' ">and role_key=#{roleKey}</if>
+    	<if test="level != null">and level=#{level}</if>
+    	<if test="remarks != null and remarks != '' ">and remarks=#{remarks}</if>
+    	<if test="orderBy != null">and order_by=#{orderBy}</if>
+    	<if test="createdTime != null">and created_time=#{createdTime}</if>
+
+    </trim>
+  </sql>
+  <sql id="column_List">
+    id,role_name,role_key,level,remarks,order_by,created_time
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findRoleList" parameterType="com.tuzhi.bj.domain.Role" resultMap="RoleResultMap">
+    select	<include refid="column_List" />
+    from t_role
+    <include refid="column_Where" />
+    order by order_by asc
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  id ${sortOrder } </if>
+    	<if test="'roleName' == sortName">  role_name ${sortOrder } </if>
+    	<if test="'roleKey' == sortName">  role_key ${sortOrder } </if>
+    	<if test="'level' == sortName">  level ${sortOrder } </if>
+    	<if test="'remarks' == sortName">  remarks ${sortOrder } </if>
+    	<if test="'orderBy' == sortName">  order_by ${sortOrder } </if>
+    	<if test="'createdTime' == sortName">  created_time ${sortOrder } </if>
+
+    </if>
+  </select>
+  
+  <!--只更新不为null的值-->
+  <update id="updateRoleSelectiveById" parameterType="com.tuzhi.bj.domain.Role">
+    update t_role
+    <set>
+          	<if test="roleName != null">
+    		role_name = #{roleName},
+    	</if>
+    	<if test="roleKey != null">
+    		role_key = #{roleKey},
+    	</if>
+    	<if test="1 == 1">
+    		level = #{level},
+    	</if>
+    	<if test="remarks != null">
+    		remarks = #{remarks},
+    	</if>
+    	<if test="1 == 1">
+    		order_by = #{orderBy},
+    	</if>
+    	<if test="createdTime != null">
+    		created_time = #{createdTime},
+    	</if>
+
+    </set>
+    where  id = #{id}
+  </update>
+</mapper>
